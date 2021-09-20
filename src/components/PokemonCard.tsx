@@ -1,3 +1,4 @@
+import {useNavigation} from '@react-navigation/core';
 import React, {useEffect, useRef, useState} from 'react';
 import {
   View,
@@ -20,6 +21,7 @@ interface Props {
 const PokemonCard = ({pokemon}: Props) => {
   const [bgColor, setBgColor] = useState('grey');
   const isMounted = useRef(true);
+  const navigation = useNavigation();
 
   useEffect(() => {
     if (!isMounted.current) {
@@ -42,7 +44,14 @@ const PokemonCard = ({pokemon}: Props) => {
   }, []);
 
   return (
-    <TouchableOpacity activeOpacity={0.9}>
+    <TouchableOpacity
+      activeOpacity={0.9}
+      onPress={() => {
+        navigation.navigate('PokemonScreen', {
+          simplePokemon: pokemon,
+          color: bgColor,
+        });
+      }}>
       <View style={{...styles.cardContainer, backgroundColor: bgColor}}>
         <View>
           <Text style={styles.name}>
