@@ -1,10 +1,30 @@
-import React from 'react';
-import {View, StyleSheet, TextInput, Platform} from 'react-native';
+import React, {useEffect, useState} from 'react';
+import {
+  View,
+  StyleSheet,
+  TextInput,
+  Platform,
+  StyleProp,
+  ViewStyle,
+} from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
+import {useDebouncedValue} from '../hooks/useDebouncedValue';
 
-const SearchInput = () => {
+interface Props {
+  style?: StyleProp<ViewStyle>;
+  onDebounce: (value: string) => void;
+}
+
+const SearchInput = ({style, onDebounce}: Props) => {
+  const [textValue, setTextValue] = useState('');
+  const debouncedValue = useDebouncedValue(textValue);
+
+  useEffect(() => {
+    onDebounce(debouncedValue);
+  }, [debouncedValue]);
+
   return (
-    <View style={styles.container}>
+    <View style={{...styles.container, ...(style as any)}}>
       <View style={styles.textBackGround}>
         <TextInput
           placeholder="Búscar pokémon"
@@ -14,6 +34,8 @@ const SearchInput = () => {
           }}
           autoCapitalize="none"
           autoCorrect={false}
+          value={textValue}
+          onChangeText={setTextValue}
         />
         <Icon name="search-outline" size={30} color="grey" />
       </View>
